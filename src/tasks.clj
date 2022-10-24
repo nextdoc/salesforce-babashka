@@ -16,7 +16,8 @@
                                (>= (count s) 3)))}})
 
 (defn parse-dx-cli-options
-  "used as first task in bb cli for parsing args"
+  "Used as first task in bb cli for parsing args.
+   Uses tasks/cli-args-spec to control argument parsing."
   {:org.babashka/cli {:spec     cli-args-spec
                       :error-fn (fn [{:keys [spec type cause msg option] :as data}]
                                   (if (= :org.babashka/cli type)
@@ -102,10 +103,14 @@
 (defn cli-response
   "Invoke a CLI process. returns the response as parsed JSON.
    If response is not parsable as JSON, it is returned as a string in a fail response."
-  [{:keys [cli command args]}]
-  (if-let [root (dx-project-root (fs/cwd))]
-    (let [request (str cli " " command " " (cli-args (assoc args :json true)
-                                                     {:remove-dashes? (= "sfdx" cli)}))
+  [{:keys [cli command args find-root json-flag?]
+    :or   {find-root  dx-project-root
+           json-flag? true}}]
+  (if-let [root (find-root (fs/cwd))]
+    (let [args-string (cond-> args
+                              json-flag? (assoc :json true)
+                              :always (cli-args {:remove-dashes? (= "sfdx" cli)}))
+          request (str cli " " command " " args-string)
           _ (println "    " request)
           response (-> request
                        (process {:dir (str root)
@@ -151,6 +156,9 @@
              e)))
 
 (defn deploy-metadata!
+  "Use the sf deploy metadata command to load source from a dir into the default scratch org.
+   On success, report a summary of the results.
+   On failure, report a list of the failed source files."
   [dir]
   (try
     (-> {:cli     "sf"

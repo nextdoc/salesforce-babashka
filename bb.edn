@@ -1,0 +1,10 @@
+{:paths ["src"]
+ :deps  {cheshire/cheshire {:mvn/version "5.11.0"}}
+ :tasks {fake-sfdx {:doc  "emulate the response behaviour of 'sf' and 'sfdx' cli tools (for tests)"
+                    :task (println (cheshire.core/generate-string {:status 0
+                                                                   :result {:hello "salesforce"}}))}
+         run-tests {:doc         "run the tests using bb"
+                    :requires    ([clojure.test :as t]
+                                  [tasks-tests])
+                    :extra-paths ["test"]
+                    :task        (t/run-tests 'tasks-tests)}}}
