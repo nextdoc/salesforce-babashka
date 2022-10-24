@@ -17,3 +17,19 @@
               :json-flag? false}
              (tasks/cli-response)
              (tasks/checked-result)))))
+
+(comment
+
+  ; emulate terminal output to check coloring
+  (-> {:cli        "bb"
+       :command    "fake-sf-deploy"
+       :args       {}
+       ; test specific config
+       :find-root  identity
+       :json-flag? false}
+      (tasks/cli-response)
+      (tasks/checked-result)
+      (tasks/report-deploy-counts)
+      )
+
+  )

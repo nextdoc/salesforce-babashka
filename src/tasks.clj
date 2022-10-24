@@ -4,7 +4,8 @@
     [babashka.fs :as fs]
     [babashka.process :refer [process]]
     [cheshire.core :as json]
-    [clojure.string :as str])
+    [clojure.string :as str]
+    [zprint.core :as z])
   (:import (java.io InputStream)))
 
 (def cli-args-spec
@@ -128,6 +129,13 @@
     (throw (Exception. "CLI command failed")))
   (:result response))
 
+(z/set-options! {:map       {:comma? false}
+                 :color-map {:string  :bright-purple
+                             :number  :bright-green
+                             :bracket :bright-yellow
+                             :paren   :bright-yellow
+                             :brace   :bright-yellow}})
+
 (defn report-deploy-counts
   [result]
   (->> result
@@ -136,7 +144,7 @@
        frequencies
        (into (sorted-map))
        (vector "Successful deployment of...")
-       (clojure.pprint/pprint))
+       (z/czprint))
   result)
 
 (defn handle-deploy-exception
