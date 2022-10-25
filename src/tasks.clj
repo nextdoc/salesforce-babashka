@@ -129,6 +129,26 @@
     (throw (Exception. "CLI command failed")))
   (:result response))
 
+(defn poll-for-success!
+  [{:keys [command success? poll-max sleep-duration]}]
+  (loop [poll-count 1]
+    (if (> poll-count poll-max)
+      {:status  1
+       :message "maximum polls reached"}
+      (do
+        (println "Poll" poll-count "..")
+        (let [response (-> (command {:poll-count poll-count})
+                           (cli-response)
+                           (checked-result))]
+          (if (success? response)
+            {:status 0
+             :result {:response   response
+                      :poll-count poll-count}}
+            (do
+              (Thread/sleep (* sleep-duration 1000))
+              (recur (inc poll-count)))))))))
+
+; https://github.com/kkinnear/zprint/blob/main/doc/options/colors.md
 (z/set-options! {:map       {:comma? false}
                  :color-map {:string  :bright-purple
                              :number  :bright-green
