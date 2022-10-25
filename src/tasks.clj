@@ -10,7 +10,7 @@
 
 (def cli-args-spec
   {:org-name {:ref      "<scratch org alias>"
-              :desc     "The alias used when creating the new scratch org. must be at least 3 chararacters"
+              :desc     "The alias used when creating the new scratch org. must be at least 3 characters"
               :require  true
               :validate (fn [s]
                           (and (string? s)
