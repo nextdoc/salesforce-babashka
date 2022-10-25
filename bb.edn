@@ -1,23 +1,24 @@
-{:paths ["src"]
- :deps  {zprint/zprint           {:mvn/version "1.2.4"}
-         org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                                  :git/sha "1a841c4cc1d4f6dab7505a98ed2d532dd9d56b78"}}
- :tasks {fake:sfdx                         {:doc  "emulate the response behaviour of 'sf' and 'sfdx' cli tools (for tests)"
-                                            :task (println (cheshire.core/generate-string {:status 0
-                                                                                           :result {:hello "salesforce"}}))}
-         fake:sf-deploy                    {:doc  "emulate the response behaviour of 'sf' deploy metadata"
-                                            :task (println (cheshire.core/generate-string {:status 0
-                                                                                           :result {:files [{:type "ApexClass"}
-                                                                                                            {:type "ApexClass"}
-                                                                                                            {:type "LWC"}]}}))}
-         fake:sf-install-report-incomplete {:doc  "emulate the response behaviour of 'sfdx' package:install:report during polling"
-                                            :task (println (cheshire.core/generate-string {:status 0
-                                                                                           :result {:status "IN_PROGRESS"}}))}
-         fake:sf-install-report-success    {:doc  "emulate the response behaviour of 'sfdx' package:install:report at end of polling"
-                                            :task (println (cheshire.core/generate-string {:status 0
-                                                                                           :result {:status "SUCCESS"}}))}
-         run-tests                         {:doc         "run the tests using bb"
-                                            :requires    ([clojure.test :as t]
-                                                          [tasks-tests])
-                                            :extra-paths ["test"]
-                                            :task        (t/run-tests 'tasks-tests)}}}
+{:paths          ["src"]
+ :min-bb-version "1.0.164"
+ :deps           {zprint/zprint           {:mvn/version "1.2.4"}
+                  org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
+                                           :git/sha "1a841c4cc1d4f6dab7505a98ed2d532dd9d56b78"}}
+ :tasks          {fake:sfdx                         {:doc  "emulate the response behaviour of 'sf' and 'sfdx' cli tools (for tests)"
+                                                     :task (println (cheshire.core/generate-string {:status 0
+                                                                                                    :result {:hello "salesforce"}}))}
+                  fake:sf-deploy                    {:doc  "emulate the response behaviour of 'sf' deploy metadata"
+                                                     :task (println (cheshire.core/generate-string {:status 0
+                                                                                                    :result {:files [{:type "ApexClass"}
+                                                                                                                     {:type "ApexClass"}
+                                                                                                                     {:type "LWC"}]}}))}
+                  fake:sf-install-report-incomplete {:doc  "emulate the response behaviour of 'sfdx' package:install:report during polling"
+                                                     :task (println (cheshire.core/generate-string {:status 0
+                                                                                                    :result {:status "IN_PROGRESS"}}))}
+                  fake:sf-install-report-success    {:doc  "emulate the response behaviour of 'sfdx' package:install:report at end of polling"
+                                                     :task (println (cheshire.core/generate-string {:status 0
+                                                                                                    :result {:status "SUCCESS"}}))}
+                  run-tests                         {:doc         "run the tests using bb"
+                                                     :requires    ([clojure.test :as t]
+                                                                   [tasks-tests])
+                                                     :extra-paths ["test"]
+                                                     :task        (t/run-tests 'tasks-tests)}}}
