@@ -175,7 +175,7 @@
                                        :out
                                        try-json-parse
                                        :result :files
-                                       (remove #(contains? #{"Changed" "Unchanged"} (:state %)))
+                                       (remove #(contains? #{"Changed" "Unchanged" "Created"} (:state %)))
                                        set
                                        (sort-by :fullName)
                                        vec)]
